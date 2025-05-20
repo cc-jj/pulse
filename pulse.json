@@ -1,0 +1,7 @@
+{
+  "main_file": "main.go",
+  "binary_name": "app",
+  "watch_dir": ".",
+  "watch_exts": [".go", ".mod", ".sum"],
+  "watch_interval": "1s"
+}
