@@ -25,6 +25,7 @@ type Config struct {
 	WatchDir      string   `json:"watch_dir"`
 	WatchExts     []string `json:"watch_exts"`
 	WatchInterval string   `json:"watch_interval"`
+	MaxWatchers   int      `json:"max_watchers"`
 }
 
 // Default configuration
@@ -34,6 +35,7 @@ var config = Config{
 	WatchDir:      ".",
 	WatchExts:     []string{".go", ".mod", ".sum"},
 	WatchInterval: "1s",
+	MaxWatchers:   100,
 }
 
 var (
@@ -63,6 +65,7 @@ func main() {
 	fmt.Printf("   Watch dir:      %s\n", config.WatchDir)
 	fmt.Printf("   Watch exts:     %v\n", config.WatchExts)
 	fmt.Printf("   Watch interval: %s\n", config.WatchInterval)
+	fmt.Printf("   Max watchers:   %d\n", config.MaxWatchers)
 	fmt.Println("👀 Watching for file changes...")
 
 	cancelCtx, cancel := context.WithCancel(context.Background())
@@ -132,6 +135,13 @@ func loadConfig(configPath string) {
 	if len(config.WatchExts) == 0 {
 		config.WatchExts = []string{".go", ".mod", ".sum"}
 	}
+	if config.MaxWatchers < 1 {
+		fmt.Printf("⚠️ Warning: Invalid max_watchers, using default of 100\n")
+		config.MaxWatchers = 100
+	} else if config.MaxWatchers > 500 {
+		fmt.Printf("⚠️ Warning: max_watchers cannot exceed 500\n")
+		config.MaxWatchers = 500
+	}
 
 	// Validate and parse the watch interval
 	duration, err := time.ParseDuration(config.WatchInterval)
@@ -190,6 +200,9 @@ func watchFiles(ctx context.Context) {
 		}
 
 		lastModified[path] = info.ModTime()
+		if len(lastModified) > config.MaxWatchers {
+			return fmt.Errorf("Exceeded max watchers limit: %d", config.MaxWatchers)
+		}
 		return nil
 	})
 
@@ -231,6 +244,12 @@ func watchFiles(ctx context.Context) {
 					changes = true
 					lastModified[path] = modTime
 					fmt.Printf("📝 File changed: %s\n", path)
+				}
+
+				if !exists {
+					if len(lastModified) >= config.MaxWatchers {
+						return fmt.Errorf("Exceeded max watchers limit: %d", config.MaxWatchers)
+					}
 				}
 
 				return nil

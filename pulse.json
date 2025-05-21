@@ -3,5 +3,6 @@
   "binary_name": "app",
   "watch_dir": ".",
   "watch_exts": [".go", ".mod", ".sum"],
-  "watch_interval": "1s"
+  "watch_interval": "1s",
+  "max_watchers": 100
 }
