@@ -55,6 +55,8 @@ The tool can be customized via a json file. Here's an example:
 | `watch_exts`     | File extensions to watch for changes                        | `[".go", ".mod", ".sum"]` |
 | `watch_interval` | How often to check for file changes (in Go duration format) | `"1s"`                    |
 
+Note that all paths (`main_file`, `binary_name`, and `watch_dir`) as relative to the current working directory.
+
 The watch_interval accepts standard Go duration strings like "500ms", "1s", "2.5s", "1m", etc. The minimum allowed interval is 500ms and the maximum is 1 hour.
 
 ## How It Works
