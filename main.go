@@ -166,7 +166,6 @@ func setupSignalHandling(ctx context.Context) {
 	signal.Notify(sigCh, syscall.SIGINT, syscall.SIGTERM)
 
 	go func() {
-		defer close(sigCh)
 		select {
 		case <-ctx.Done():
 			return
