@@ -185,8 +185,7 @@ func watchFiles(ctx context.Context, wg *sync.WaitGroup) {
 	// Get initial file list and modification times
 	err := filepath.Walk(config.WatchDir, func(path string, info os.FileInfo, err error) error {
 		if err != nil {
-			errCh <- err
-			return nil
+			return err
 		}
 
 		if info.IsDir() || !shouldWatch(path) {
@@ -220,11 +219,9 @@ func watchFiles(ctx context.Context, wg *sync.WaitGroup) {
 
 			err := filepath.Walk(config.WatchDir, func(path string, info os.FileInfo, err error) error {
 				if err != nil {
-					errCh <- err
-					return nil
+					return err
 				}
 
-				// Skip directories and files we don't care about
 				if info.IsDir() || !shouldWatch(path) {
 					return nil
 				}
