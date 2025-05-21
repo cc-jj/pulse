@@ -10,7 +10,6 @@ import (
 	"os/signal"
 	"path/filepath"
 	"strings"
-	"sync"
 	"syscall"
 	"time"
 )
@@ -69,12 +68,9 @@ func main() {
 	cancelCtx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	var wg sync.WaitGroup
-
 	setupSignalHandling(cancelCtx)
 
-	wg.Add(1)
-	go watchFiles(cancelCtx, &wg)
+	go watchFiles(cancelCtx)
 
 	// Initial build and run
 	buildAndRun()
@@ -88,13 +84,11 @@ func main() {
 			fmt.Printf("❌ %v\n", err)
 			cancel()
 			stopProcess()
-			wg.Wait()
 			os.Exit(1)
 		case <-done:
 			fmt.Println("💤 Go Pulse shutting down...")
 			cancel()
 			stopProcess()
-			wg.Wait()
 			os.Exit(0)
 		}
 	}
@@ -177,8 +171,7 @@ func setupSignalHandling(ctx context.Context) {
 	}()
 }
 
-func watchFiles(ctx context.Context, wg *sync.WaitGroup) {
-	defer wg.Done()
+func watchFiles(ctx context.Context) {
 
 	lastModified := make(map[string]time.Time)
 
