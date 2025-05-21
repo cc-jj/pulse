@@ -75,6 +75,9 @@ func main() {
 	// Initial build and run
 	buildAndRun()
 
+	exitCode := 0
+
+loop:
 	for {
 		select {
 		case <-buildCh:
@@ -82,16 +85,17 @@ func main() {
 			buildAndRun()
 		case err := <-errCh:
 			fmt.Printf("❌ %v\n", err)
-			cancel()
-			stopProcess()
-			os.Exit(1)
+			exitCode = 1
+			break loop
 		case <-done:
 			fmt.Println("💤 Go Pulse shutting down...")
-			cancel()
-			stopProcess()
-			os.Exit(0)
+			break loop
 		}
 	}
+
+	cancel()
+	stopProcess()
+	os.Exit(exitCode)
 }
 
 // Load the configuration from pulse.json if it exists
