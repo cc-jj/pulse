@@ -21,14 +21,17 @@ go get -tool github.com/cc-jj/pulse@latest
 Run it from any Go project directory
 
 ```
-# run using the default config
-go tool pulse
-
-# run using a custom config
-go tool pulse -c=/path/to/pulse.json
+# initialize pulse with a default config in the current working directory
+go tool -init
 
 # print the verison
 go tool pulse -v
+
+# run specifying the config path
+go tool pulse -c=/path/to/pulse.json
+
+# run using the default config path (./pulse.json)
+go tool pulse
 ```
 
 ## Configuration
