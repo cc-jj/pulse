@@ -47,11 +47,27 @@ var (
 
 func main() {
 	versionFlag := flag.Bool("v", false, "Print version information and exit")
+	initFlag := flag.Bool("init", false, "Initialize a new pulse.json configuration file")
 	configFlag := flag.String("c", DefaultConfigPath, "Specify the configuration file path")
 	flag.Parse()
 
 	if *versionFlag {
 		fmt.Printf("Go Pulse v%s\n", Version)
+		return
+	}
+
+	if *initFlag {
+		data, err := json.MarshalIndent(config, "", "  ")
+		if err != nil {
+			fmt.Printf("Error creating default config: %s\n", err)
+			return
+		}
+		path := "pulse.json"
+		if err := os.WriteFile(path, data, 0644); err != nil {
+			fmt.Printf("Error writing config file: %s\n", err)
+			return
+		}
+		fmt.Printf("Configuration file created at %s\n", path)
 		return
 	}
 
