@@ -22,7 +22,7 @@ Run it from any Go project directory
 
 ```
 # initialize pulse with a default config in the current working directory
-go tool -init
+go tool pulse -init
 
 # print the verison
 go tool pulse -v
