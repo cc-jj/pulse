@@ -117,7 +117,7 @@ loop:
 	os.Exit(exitCode)
 }
 
-// Load the configuration from pulse.json if it exists
+// Load the configuration. Fallback to defaults if the config file is missing or invalid.
 func loadConfig(configPath string) {
 	fmt.Printf("📄 Loading configuration from: %s\n", configPath)
 
