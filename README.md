@@ -1,6 +1,6 @@
 # Go Pulse
 
-A simple, dependency-free tool that automatically rebuilds and runs your Go program whenever files are changed.
+A simple, dependency-free tool that automatically rebuilds and runs your Go program when files are changed.
 
 ## Features
 
@@ -44,7 +44,8 @@ The tool can be customized via a json file. Here's an example:
   "binary_name": "app",
   "watch_dir": ".",
   "watch_exts": [".go", ".mod", ".sum"],
-  "watch_interval": "1s"
+  "watch_interval": "1s",
+  "max_watchers": 100
 }
 ```
 
@@ -59,7 +60,7 @@ The tool can be customized via a json file. Here's an example:
 | `watch_interval` | How often to check for file changes (in Go duration format) | `"1s"`                    |
 | `max_watchers`   | Prevent watching more than this many files                  | `100`                     |
 
-Note that all paths (`main_file`, `binary_name`, and `watch_dir`) as relative to the current working directory.
+Note that all paths (`main_file`, `binary_name`, and `watch_dir`) are relative to the current working directory.
 
 The `watch_interval` accepts standard Go duration strings like "500ms", "1s", "2.5s", "1m", etc. The minimum allowed interval is 500ms and the maximum is 1 hour.
 
